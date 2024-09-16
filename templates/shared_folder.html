@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	</head>
+<body>
+	<p>Click on the choose File button to upload a file</p>
+	<p>{{ user_contents }}</p>
+	{% if user_contents %}
+		<div class="w3-row-padding">
+			{% for i,j in user_contents.items() %}
+				<div class="w3-col s3 l3 m4">
+					{% if "." in i %}
+						<img id="ac" src = '{{ i }}' style="width: 100%;" >
+					{% endif %}
+				</div>
+			{% endfor %}
+			{% for i,j in user_contents.items() %}
+				<div class="w3-col s3 l3 m4">
+					{% if "." not in i %}
+						<a id="ac" href = '{{ i }}' style="width: 100%;" >Folder: {{ i }}</a>
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	
+</body>	
+</html>

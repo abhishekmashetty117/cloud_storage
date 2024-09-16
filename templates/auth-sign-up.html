@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
+    <title>Register</title>
+    {% include "html_templates/head.html" %}
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1168.0" data-gr-ext-installed="">
+
+ <div class="account-pages my-5 pt-sm-5">
+  <div class="container">
+   <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 col-xl-5">
+     <div class="card overflow-hidden">
+       <div class="bg-primary-subtle">
+         <div class="row">
+           <div class="col-7">
+             <div class="text-primary p-4">
+               <h5 class="text-primary">Register !</h5>
+               <p class="text-primary">Create your account.</p>
+             </div>
+           </div>
+           <div class="col-5 align-self-end">
+              {% include "html_templates/desk_logo.html" %}
+           </div>
+         </div>
+       </div>
+       <div class="card-body pt-0"> 
+         {% include "html_templates/top_round_logo.html" %}
+         <div class="p-2">
+           <form style="width: 75%;margin-left:12.5%">  
+              <div class="row overflow-hidden">
+                <div class="col-12 mb-2">
+                  <div class="form-floating text-secondary">
+                    <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Full Name" onblur="form_validation('fullname')" required>
+                    <label for="fullname" class="form-label">Full Name</label>
+                  </div>
+                  <div id="fullname_error_success">                    
+                  </div>
+                </div>        
+                <div class="col-12 mb-2">
+                  <div class="form-floating text-secondary">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" onblur="form_validation('email')" required>
+                    <label for="email" class="form-label">Email</label>
+                  </div>
+                  <div id="email_error_success">                    
+                  </div>
+                </div>
+                <div class="col-12 mb-3">
+                  <div class="form-floating text-secondary">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" aria-describedby="paswordHelpBlock" onblur="form_validation('password')" required>
+                    <label for="password" class="form-label">Password</label>
+                  </div>                  
+                  <div id="password_error_success">                    
+                  </div>
+                  <small id="paswordHelpBlock" class="form-text text-muted">
+                    Password must be more than 8 characters long, should contain atleast 1 uppercase, 1 lowercase and 1 number
+                  </small>  
+                </div>
+                <div class="col-12 mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" name="iAgree" id="iAgree" required>
+                    <label class="form-check-label text-secondary" for="iAgree">
+                      I agree to the <a href="#!" class="link-primary text-decoration-none">terms and conditions</a>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="d-grid">
+                    <p class="btn btn-dark btn-lg" onclick="register_ajax()" style="background-color:#22BC66;border-color:#22BC66;">Sign up</p>
+                  </div>
+                </div>
+              </div>
+          </form>
+          <div class="row">
+            <div class="col-12">
+              <p class="mb-0 mt-3 text-secondary text-center">Already have an account? <a href="{{url_for('login')}}" class="link-primary text-decoration-none">Sign in</a></p>
+            </div>
+          </div>
+         </div>
+       </div>
+     </div>
+     {% include "html_templates/footer.html" %}
+    </div>
+   </div>
+  </div>
+ </div>
+
+  <script src="{{ url_for('static', filename='js/fullname_criteria.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/email_criteria.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/password_criteria.js') }}"></script>  
+  <script src="{{ url_for('static', filename='js/success_failed_handler.js') }}"></script>
+  <script>    
+    function form_validation(element_id){
+      if (element_id == 'fullname'){
+        fullname = document.getElementById('fullname').value;
+        if(fullname !=''){
+          if (fullname_criteria(fullname)){
+            success_failed_handler('success','fullname','fullname_error_success','Good FullName');
+          }
+          else{
+            success_failed_handler('failed','fullname','fullname_error_success','Invalid Fullname');
+          }
+        }
+        else{
+          success_failed_handler('failed','fullname','fullname_error_success','Invalid Fullname');
+        }
+      }
+      else if (element_id == 'email'){
+        email = document.getElementById('email').value;
+        if(email !=''){
+          if (email_criteria(email)){
+            success_failed_handler('success','email','email_error_success','Good Email');
+          }
+          else{
+            success_failed_handler('failed','email','email_error_success','Email did not meet criteria');
+          }
+        }
+        else{
+          success_failed_handler('failed','email','email_error_success','Email did not meet criteria');
+        }
+      }
+      else if (element_id == 'password'){
+        password = document.getElementById('password').value;          
+        if(password !=''){
+          if (password_criteria(password)){
+            success_failed_handler('success','password','password_error_success','Good Password');
+          }
+          else{
+            success_failed_handler('failed','password','password_error_success','Password did not meet criteria');
+          }
+        }
+        else{
+          success_failed_handler('failed','password','password_error_success','Password did not meet criteria');
+        }
+      }
+    }
+    function register_ajax(){
+      fullname = document.getElementById('fullname').value;
+      email = document.getElementById('email').value;
+      password = document.getElementById('password').value;
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          if (this.responseText.length < 200 ){
+            response = JSON.parse(this.responseText);
+            if (response.status_message == 'failed'){
+                register_ajax_response(response);
+            }
+          }
+          else{
+            redirectUrl = "{{ url_for('home') }}";
+            window.location.href = redirectUrl;
+          }
+        }
+      };
+      xhttp.open("POST", "{{ url_for('register') }}", true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhttp.send("fullname="+fullname+"&email="+email+"&password="+password);
+    }    
+    function register_ajax_response(register_message){
+      if (register_message.data.message_type == 'email'){
+        success_failed_handler('failed','email','email_error_success',register_message.data.message);        
+      }
+      else if (register_message.data.message_type == 'password'){
+        success_failed_handler('failed','password','password_error_success',register_message.data.message);
+      }
+      else if (register_message.data.message_type == 'fullname'){
+        success_failed_handler('failed','fullname','fullname_error_success',register_message.data.message);
+      }
+    }
+  </script>
+</body>
+</html>

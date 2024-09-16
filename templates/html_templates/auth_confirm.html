@@ -1,0 +1,9 @@
+
+<p>A email has been send to {{email}}. Please check for an email from company and click on the included link to reset your password. <strong>The password reset link send to your mail-id is only valid for next 5 minutes.</strong></p>                                                  
+<a href="/home" class="btn btn-dark btn-lg mt-4" style="background-color:#22BC66;border-color:#22BC66;">Return to Home</a>
+<input type="email" name="email" id="email" placeholder="name@example.com" value={{{email}}} hidden>
+<div class="row">
+   <div class="col-12">
+     <p class="mb-0 mt-3 text-secondary text-center">Did not receive mail? <a onclick="recover_password_ajax()" class="link-primary text-decoration-none">Resend</a></p>
+   </div>
+ </div>

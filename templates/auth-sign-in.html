@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
+    <title>Login</title>
+    {% include "html_templates/head.html" %}
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1168.0" data-gr-ext-installed="">
+
+ <div class="account-pages my-5 pt-sm-5">
+  <div class="container">
+   <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 col-xl-5">
+     <div class="card overflow-hidden">
+       <div class="bg-primary-subtle">
+         <div class="row">
+           <div class="col-7">
+             <div class="text-primary p-4">
+               <h5 class="text-primary">Welcome Back !</h5>
+               <p>Login to stay connected.</p>
+             </div>
+           </div>
+           <div class="col-5 align-self-end">
+              {% include "html_templates/desk_logo.html" %}
+           </div>
+         </div>
+       </div>
+       <div class="card-body pt-0"> 
+        {% include "html_templates/top_round_logo.html" %}
+         <div class="p-2">
+           <form style="width: 75%;margin-left:12.5%">
+            <div class="row overflow-hidden">
+             <div class="col-12 mb-2">
+               <div class="form-floating text-secondary">                                            
+                 <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" onblur="form_validation('email')" required>
+                 <label for="email" class="form-label">Email</label>
+               </div>
+               <div id="email_error_success">                    
+               </div>
+             </div>
+             <div class="col-12 mb-3">
+               <div class="form-floating text-secondary">                                                    
+                  <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>                                                
+                  <label for="password" class="form-label">Password</label>
+                </div>
+                <div id="password_error_success">                    
+                </div>             
+             </div>        
+             <div class="col-12">
+                <div class="d-grid">
+                  <p class="btn btn-dark btn-lg" onclick="login_ajax()" style="background-color:#22BC66;border-color:#22BC66;">Sign In</p>                  
+                </div>
+             </div>            
+             <div class="row">
+               <div class="col-12">
+                 <p class="mb-0 mt-3 text-secondary text-center"><a href="{{url_for('reset_change_password')}}" class="link-primary text-decoration-none">Forgot Password?</a></p>
+               </div>
+             </div>
+             <div class="row">
+               <div class="col-12">
+                 <p class="mb-0 mt-3 text-secondary text-center">Don't have an account? <a href="{{url_for('register')}}" class="link-primary text-decoration-none">Create</a></p>
+               </div>
+             </div>
+            </div>
+           </form>
+         </div>
+       </div>
+     </div>
+     {% include "html_templates/footer.html" %}
+    </div>
+   </div>
+  </div>
+ </div>
+
+<script src="{{ url_for('static', filename='js/email_criteria.js') }}"></script>
+<script src="{{ url_for('static', filename='js/success_failed_handler.js') }}"></script>
+ <script>
+    function form_validation(element_id){
+      if (element_id == 'email'){
+        email = document.getElementById('email').value;
+        if(email !=''){
+          if (email_criteria(email)){
+            success_failed_handler('success','email','email_error_success','Good Email');
+          }
+          else{
+            success_failed_handler('failed','email','email_error_success','Email did not meet criteria');
+          }
+        }
+        else{
+          success_failed_handler('failed','email','email_error_success','Email did not meet criteria');
+        }
+      }
+    }
+    function login_ajax(){
+      email = document.getElementById('email').value;
+      password = document.getElementById('password').value;
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          if (this.responseText.length < 200 ){           
+            response = JSON.parse(this.responseText);
+            if (response.status_message == 'failed'){
+              login_ajax_response(response);
+            }
+          }
+          else{
+            redirectUrl = "{{ url_for('home') }}";
+            window.location.href = redirectUrl;
+          }
+        }
+      };
+      xhttp.open("POST", "{{ url_for('login') }}", true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhttp.send("email="+email+"&password="+password);
+    }
+    function login_ajax_response(login_message){
+      if (login_message.data.message_type == 'email'){ // message_type is email
+        success_failed_handler('failed','email','email_error_success',login_message.data.message); 
+      }
+      else if (login_message.data.message_type == 'password'){ // message_type is password
+        success_failed_handler('failed','password','password_error_success',login_message.data.message);
+      }
+    }
+ </script>
+</body>
+</html>

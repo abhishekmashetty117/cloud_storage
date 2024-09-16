@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	</head>
+<body>
+	<p>Click on the choose File button to upload a file</p>
+	<p>{{ user_contents }}</p>
+	<p>{{ user_information1}}</p>
+
+	{% if user_contents %}
+		<div class="w3-row-padding">
+			{% for i,j in user_contents.items() %}
+				<div class="w3-col s3 l3 m4">
+					{% if "." in i %}
+						<img id="ac" src = '{{ i }}' style="width: 100%;" >
+					{% endif %}
+				</div>
+			{% endfor %}
+			{% for i,j in user_contents.items() %}
+				<div class="w3-col s3 l3 m4">
+					{% if "." not in i %}
+						<a id="ac" href = '{{ i }}' style="width: 100%;" >Folder: {{ i }}</a>
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+
+	<form id="file_upload_form" method="POST" action="/upload" enctype="multipart/form-data" onsubmit="change_action_file_upload()">
+		<input type="file" id="myFile" name="filename" multiple>
+		<input type="submit">
+	</form>
+
+
+	<form id="create_folder_form" method="POST" action="/new_folder" enctype="multipart/form-data" onsubmit="change_action_create_folder()">
+		<input type="text" id="folder_name_to_create" name="folder_name_to_create" placeholder="New Folder">
+		<input type="submit">
+	</form>
+
+	<script type="text/javascript">
+		function change_action_file_upload(){
+			document.getElementById("file_upload_form").action = "/upload"+window.location.pathname;
+		}
+		function change_action_create_folder(){
+			document.getElementById("create_folder_form").action = "/new_folder"+window.location.pathname;
+		}
+	</script>
+</body>	
+</html>
